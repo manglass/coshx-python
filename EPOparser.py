@@ -39,7 +39,7 @@ def tree(filename):
 
 # get :: -> [Element]
 def get(tree, elementPath):
-	return tree.xpath('//' + elementPath)
+	return tree.xpath(elementPath)
 
 # getAll :: [{}], '' -> ?
 def getAll(tree, element, info, alias):
@@ -52,7 +52,7 @@ def parse(tree, fields):
 	return list(filter(lambda x: bool(x), list(map(lambda pair: getAll(tree, pair[0], pair[1], pair[2]), fields))))
 
 def config(): 
-	return [['abstract', 'attrib', 'abstract'], ['abstract', 'text', 'abstract'], ['ep-patent-document', 'attrib', 'ep-patent-document'], ['B001EP', 'text', 'nametocallit']]
+	return [['//abstract', 'attrib', 'abstract'], ['//abstract', 'text', 'abstract'], ['//ep-patent-document', 'attrib', 'ep-patent-document'], ['//B001EP', 'text', 'nametocallit']]
 
 def marker(id):
 	return id + '-parsecomplete'
@@ -106,4 +106,6 @@ def run(path, config, state, callbackEach, callbackAll):
 # import parser
 # EPOparser.run('index.xml', EPOparser.config, {}, lambda x: x, lambda x: x)
 # EPOparser.run('index.xml', EPOparser.config, {}, toQueue, print)
+
+# capture doc id globally and state of document (kind code)... provide with each payload
 
