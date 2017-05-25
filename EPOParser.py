@@ -8,7 +8,7 @@ def fmap(fn, coll):
   return functools.reduce(lambda acc, val: acc + [fn(val)], coll, [])
 
 def ffilter(predicateFn, coll):
-	return functools.reduce(lambda acc, val: (acc + [val]) if predicateFn(val) else acc, coll, [])
+  return functools.reduce(lambda acc, val: (acc + [val]) if predicateFn(val) else acc, coll, [])
 
 def fcmap(fn):
   return lambda coll: functools.reduce(lambda acc, val: acc + [fn(val)], coll, [])
@@ -17,17 +17,17 @@ def fcfilter(predicateFn):
   return lambda coll: functools.reduce(lambda acc, val: (acc + [val]) if predicateFn(val) else acc, coll, [])
 
 def fzip(coll1, coll2):
-	return list(zip(coll1, coll2))
+  return list(zip(coll1, coll2))
 
 def fcompose(*functions):
-    return functools.reduce(lambda f, g: lambda x: f(g(x)), functions, lambda x: x)  
+  return functools.reduce(lambda f, g: lambda x: f(g(x)), functions, lambda x: x)  
 
 ###########
 # helpers # 	
 ###########
 
 def marker(id):
-	return id + '-parsecomplete'
+  return id + '-parsecomplete'
 
 # fromElement :: attrib | text -> Element -> {} | String
 def fromElement(info):
@@ -35,24 +35,24 @@ def fromElement(info):
 
 # tree :: String -> Tree
 def tree(filename):
-	return etree.parse(filename, etree.XMLParser(encoding='utf-8', recover=True))
+  return etree.parse(filename, etree.XMLParser(encoding='utf-8', recover=True))
 
 # getFileInfo :: String -> [(filename, file-location)]
 def getFileInfo(indexFilename):
-	return fzip(
+  return fzip(
     fmap(fromElement('text'), getElement(tree(indexFilename), '//filename')),
     fmap(fromElement('text'), getElement(tree(indexFilename), '//file-location'))
   )
 
 # getElement :: Tree, xpath -> [Element]
 def getElement(tree, elementPath):
-	return tree.xpath(elementPath)
+  return tree.xpath(elementPath)
 
 # getMetadata :: Tree, xpath, attrib | text, String -> [] | [(alias, tag, {} | String)]
 def getMetadata(tree, elementPath, info, alias):
-	return fmap(lambda el: ( alias, el.tag, getattr(el, info) ), getElement(tree, elementPath))
+  return fmap(lambda el: ( alias, el.tag, getattr(el, info) ), getElement(tree, elementPath))
 
-#TODO: compose for longer chains
+# parse :: Tree, [[ xpath, attrib | text, String ]] -> [(alias, tag {} | String)]
 def parse(tree, fields):
   return fcompose(
     fcmap(lambda x: x[0]),
@@ -101,7 +101,12 @@ def traverse(file, fields, state, callback):
   os.chdir(initialDirectory) 
 
 def fields(): 
-	return [['//abstract', 'attrib', 'abstract'], ['//abstract', 'text', 'abstract'], ['//ep-patent-document', 'attrib', 'ep-patent-document'], ['//B001EP', 'text', 'nametocallit']]
+  return [
+    ['//abstract', 'attrib', 'abstract'], 
+    ['//abstract', 'text', 'abstract'], 
+    ['//ep-patent-document', 'attrib', 'ep-patent-document'], 
+    ['//B001EP', 'text', 'nametocallit']
+  ]
 
 def run(path, fields, state, callbackEach, callbackAll):
   fileInfo = getFileInfo(path)
