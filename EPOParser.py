@@ -118,7 +118,7 @@ def run(path, fields, state, callbackEach, callbackAll):
 # use and notes #
 #################  
 
-# import parser
+# import EPOParser
 
 # EPOParser.run('index.xml', EPOParser.fields, {}, lambda x: x, lambda x: x)
 # EPOParser.run('index.xml', EPOParser.fields, {}, toQueue, print)
